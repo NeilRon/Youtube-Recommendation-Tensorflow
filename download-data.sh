@@ -1,0 +1,1 @@
+wget -c "http://github.com/le-scientifique/torchDatasets/raw/master/dbpedia_csv.tar.gz"
