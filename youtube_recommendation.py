@@ -44,23 +44,31 @@ def init_data(read_file):
                     sku_cnt += 1
 
 def read_data(pos, batch_size, data_lst):
+    # 获取一个batch
     batch = data_lst[pos:pos + batch_size]
+    # 定义输入一个 batch_size * 最大序列长度
     x = np.zeros((batch_size, max_window_size))
+    # 相对应的mask
     mask = np.zeros((batch_size, max_window_size))
     y = []
+    #
     word_num = np.zeros((batch_size))
     line_no = 0
     for line in batch:
         line = line.strip().split(' ')
+        # 找到label对应的id
         y.append(label_dict[line[0]])
         col_no = 0
         for i in line[1:]:
+            # 把sku转化为id
+            # 对应位置处理为mask
             if i in sku_dict:
                 x[line_no][col_no] = sku_dict[i]
                 mask[line_no][col_no] = 1
                 col_no += 1
             if col_no >= max_window_size:
                 break
+        # 保存最终序列长度
         word_num[line_no] = col_no
         line_no += 1
 
@@ -103,6 +111,7 @@ embedding = {
     # 'output':tf.Variable(tf.random_uniform([len(label_dict)+1, emb_size], -1.0, 1.0))
 }
 
+#
 emb_mask = tf.placeholder(tf.float32, shape=[None, max_window_size, 1])
 word_num = tf.placeholder(tf.float32, shape=[None, 1])
 
